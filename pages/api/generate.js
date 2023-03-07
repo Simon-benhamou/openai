@@ -29,10 +29,13 @@ export default async function (req, res) {
     const quote = await getQuote(persona)
     const image = await getPersonaImage(persona)
     const initial =  persona.name.split(" ").map((val) => val.charAt(0)).slice(0, 2).join("")
+    const needs = await getPersonaNeeds(persona)
+    const frustration = await getPersonaFrustrations(persona)
+    const expectation = await getPersonaExpectation(persona)
+    const personalityType = await getPersonalityType(persona)
 
 
-
-    const result = {...persona,background:background, quote: quote,initial:initial,image:image }
+    const result = {...persona,background:background, quote: quote,initial:initial,image:image,needs: needs,frustration: frustration, expectation: expectation,personalityType:personalityType}
     res.status(200).json({ result: result});
   } catch(error) {
     // Consider adjusting the error handling logic for your use case
@@ -69,24 +72,61 @@ const getQuote = async (persona) => {
 }
 const getPersonaImage = async(persona) => {
   const response = await openai.createImage({
-    prompt: `a face  picture  professional for marketing of ${persona.gender} of ${persona.age} years old`,
+    prompt: `a studio picture for marketing of a persona type of ${persona.gender} of ${persona.age} years old`,
     n: 1,
     size: "512x512",
   });
   return  response.data.data[0].url;
 }
-
-/*   Needs: "A centralized way of being introduced to the new medical products on the market, as well as the research around each",
-  Expectation:"For pharma companies to provide relevant research when launching new medical products",
-  Frustration:"Having a variety of medical reps being scheduled in her day each introducing new medication, taking up consulting time. As well as attending product launches where marketing is the focus rather than the research and patient impact around the product",
-  personalityType:"Rational",
-  Quote:""The good physician treats the disease; the great physician treats the patient who has the disease." - William Osler"
-  Needs: "A simple way to locate medical records and contact the doctors holding these records",
-  Expectation:"Efficient processes with minimum waiting time between steps",
-  Frustration:"Waiting without knowing what's going on, not being in control of a process, shouts",
-  personalityType:"Guardian",
-  Quote:""A professional lawyer is one that controls all the aspects of a process in order to Win!
-  */
+const getPersonaNeeds = async (persona) => {
+  const completion = await openai.createCompletion({
+    model: "text-davinci-003",
+    prompt: generatePromptNeeds(persona),
+    max_tokens:50,
+    temperature: 0.6,
+  });
+  return completion.data.choices[0].text
+}
+const getPersonaFrustrations = async (persona) => {
+  const completion = await openai.createCompletion({
+    model: "text-davinci-003",
+    prompt: generatePromptFrustrations(persona),
+    max_tokens:50,
+    temperature: 0.6,
+  });
+  return completion.data.choices[0].text
+}
+const getPersonaExpectation = async (persona) => {
+  const completion = await openai.createCompletion({
+    model: "text-davinci-003",
+    prompt: generatePromptExpectation(persona),
+    max_tokens:50,
+    temperature: 0.6,
+  });
+  return completion.data.choices[0].text
+}
+const getPersonalityType = async (persona) => {
+  const completion = await openai.createCompletion({
+    model: "text-davinci-003",
+    prompt: generatePromptPersonalityType(persona),
+    max_tokens:10,
+    temperature: 0.6,
+  });
+  return completion.data.choices[0].text
+}
+function generatePromptNeeds(persona){
+  return `Suggest me the very detailed and low-level requests and whishes of a ${persona.gender} named ${persona.name}  of ${persona.age} years old that works in/as ${persona.occupation} in ${persona.location} to completing a particular tasks`
+}
+function generatePromptFrustrations(persona){
+    return `What can ruin ${persona.name}'s experience and prevent her/him from using your product? List the pain points for a ${persona.gender} named ${persona.name} , ${persona.age} years old that works in/as ${persona.occupation} in ${persona.location}`
+}
+function generatePromptExpectation(persona){
+  return `Suggest me the potential expectations of a  ${persona.gender}  named ${persona.name}, ${persona.age}  years old that works as an ${persona.occupation} regarding the product or product manufacturer/service provider for.
+   Most expectations are based on ${persona.name}'s previous experiences (with your competitors or related services) or/and word of mouth.`
+}
+function generatePromptPersonalityType (persona){
+    return `What would be the personality type of a ${persona.gender}  named ${persona.name}, ${persona.age} years old that work in  ${persona.occupation} between the 4 following options : Rational, Artisan, Guardian and Idealist `
+}
 function generatePromptBackground(persona) {
 
   return`suggest me a background for a ${persona.gender} named ${persona.name} of ${persona.age} years old,  that works in ${persona.occupation} in ${persona.location}
@@ -98,54 +138,9 @@ function generatePromptBackground(persona) {
 }
 function generatePromptQuote(persona) {
   return`suggest me a quote that a ${persona.occupation} of ${persona.age} years old,  would say.
+  In your answer do not write "Answer: ", response straight the quote.
     for Example :
     suggest me a quote that a Psychiatrist of 52  years old,  would say would be :
     The good physician treats the disease; the great physician treats the patient who has the disease." - William Osler
    ` 
 }
-/*`base of the following userRequest object, build the following persona object with all its attribute including background and initial. 
-  the background is an example of the occupation and location and also the gender. 
-  userRequest : {
-    name:"Amelia Schmidt",
-    age:"52",
-    location:"Germany",
-    occupation:"Psychiatrist",
-    gender:"Female"
-    
-  },
- persona:  {
-  name:"Amelia Schmidt",
-  age:"52",
-  location:"Germany",
-  initial:"AS"
-  occupation:"Psychiatrist",
-  gender:"Female"",
-  background:"Amelia is a practicing psychiatrist. She has many years of experience assisting patients of all ages suffering from various forms of depression. She is also a mother of 2 grown up children and continues to juggle the demands of being a parent and medical professional"
-
-  },
-  userRequest : {
-    name:"Dirk Bekker",
-    age:"35",
-    location:"Munich, Germany",
-    occupation:"Lawyer",
-    gender:"Male"
-    
-  },
- persona:  {
-  name:"Dirk Bekker",
-  age:"35",
-  location:"Munich, Germany",
-  occupation:"Lawyer",
-  gender:"Male"
-  initial:"RR"
-  background:"Dirk is a lawyer in the field of health claims. He spends his day receiving requests of patients to sue institutions and performing at court"
-
-  },
-  userRequest: {
-    name: ${persona.name},
-    age:${persona.age}",
-    location:${persona.location},
-    occupation:${persona.occupation},
-    gender:${persona.gender}
-  },
-  persona:`;*/

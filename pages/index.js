@@ -98,24 +98,44 @@ export default function Home() {
             value={persona.location}
             onChange={(e) => setPersona({...persona,location:e.target.value})}
           />
-          <input type="submit" value="Generate persona" />
+          <input type="submit" value={"Generate persona" } />
         </form>
         {loading &&  <div className={styles.spinner}></div> }
         {result && !loading && <div className={styles.result}>
           <div className={styles.profile}>
             <img src={result?.image}/>
             <div>
+            <div className={styles.label2}>Name</div>
               <div>{ `${result?.name}(${result?.initial})`}</div>
+              <div className={styles.label2}>Occupation</div>
+
               <div>{result?.occupation}</div>
+              <div className={styles.label2}>Age</div>
+
               <div>{result?.age}</div>
+              <div className={styles.label2}>Location</div>
+
               <div>{result?.location}</div>
+              <div className={styles.label2}>Gender</div>
+
               <div>{result?.gender}</div>
+              <div className={styles.label2}>personality type</div>
+              <div>{result?.personalityType}</div>
               </div> 
             </div>
-          <div>{result?.background}</div>
-          <div>{result?.quote}</div>
+            <div>
+          <div className={styles.label}>Background</div>
+          <div className={styles.descriptions}>{result?.background}</div>
+          <div className={styles.label}>Quote</div>
+          <div className={styles.descriptions}>{result?.quote}</div>
+          <div className={styles.label}>Needs</div>
+          <div className={styles.descriptions}>{result?.needs}</div>
+          <div className={styles.label}>Expectation</div>
+          <div className={styles.descriptions}>{result?.expectation}</div>
+          <div className={styles.label}>Frustration</div>
+          <div className={styles.descriptions}>{result?.frustration}</div>
 
-          
+          </div>
           </div>}
       </main>
     </div>
