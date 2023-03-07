@@ -2,6 +2,7 @@ import Head from "next/head";
 import { useState } from "react";
 import styles from "./index.module.css";
 
+
 export default function Home() {
   const [persona, setPersona] = useState({
     name: "",
@@ -55,7 +56,7 @@ export default function Home() {
   return (
     <div>
       <Head>
-        <title>OpenAI Quickstart</title>
+        <title>Persona AI</title>
         <link rel="icon" href="/persona.png" />
       </Head>
 
