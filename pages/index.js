@@ -56,11 +56,11 @@ export default function Home() {
     <div>
       <Head>
         <title>OpenAI Quickstart</title>
-        <link rel="icon" href="/dog.png" />
+        <link rel="icon" href="/persona.png" />
       </Head>
 
       <main className={styles.main +" "+ styles.flex}>
-        <img src="/dog.png" className={styles.icon} />
+        <img src="/persona.png" className={styles.icon} />
         <h3>My Persona Generator</h3>
         <form onSubmit={onSubmit}>
           <input

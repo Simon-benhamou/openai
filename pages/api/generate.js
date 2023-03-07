@@ -125,7 +125,7 @@ function generatePromptExpectation(persona){
    Most expectations are based on ${persona.name}'s previous experiences (with your competitors or related services) or/and word of mouth.`
 }
 function generatePromptPersonalityType (persona){
-    return `What would be the personality type of a ${persona.gender}  named ${persona.name}, ${persona.age} years old that work in  ${persona.occupation} between the 4 following options : Rational, Artisan, Guardian and Idealist `
+    return `What would be the personality type of a ${persona.gender}  named ${persona.name}, ${persona.age} years old that work in  ${persona.occupation} between the 4 following options : Rational, Artisan, Guardian and Idealist. response straight one of 4 options.`
 }
 function generatePromptBackground(persona) {
 
