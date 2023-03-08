@@ -74,7 +74,7 @@ const getPersonaImage = async(persona) => {
   const response = await openai.createImage({
     prompt: `a studio picture for marketing of a persona type of ${persona.gender} of ${persona.age} years old`,
     n: 1,
-    size: "512x512",
+    size: "256x256",
   });
   return  response.data.data[0].url;
 }
